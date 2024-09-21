@@ -9,7 +9,7 @@ import (
 func Readfile(filename string) ([][]string, error) {
 	file, err := os.Open(filename)
 	if err != nil {
-		fmt.Println("error opening file")
+		fmt.Println("error opening file, or file doesn't exist")
 		os.Exit(0)
 	}
 	var result [][]string

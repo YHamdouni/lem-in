@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 
 	Functions "lemin/Functions"
 )
@@ -14,6 +15,10 @@ func main() {
 		os.Exit(0)
 	}
 	file := Args[0]
+	if !strings.HasSuffix(file, ".txt") {
+		fmt.Println("use a file extention : = '.txt'")
+		os.Exit(0)
+	}
 	data, err := Functions.Readfile(file)
 	if err != nil {
 		fmt.Println("error reading file")
