@@ -17,8 +17,10 @@ func Readfile(filename string) ([][]string, error) {
 	for Scanner.Scan() {
 		line := Scanner.Text()
 		var slice []string
-		slice = append(slice, line)
-		result = append(result, slice)
+		if line != "" {
+			slice = append(slice, line)
+			result = append(result, slice)
+		}
 	}
 	if len(result) == 0 {
 		fmt.Println("ERROR:\tthe file is empty")

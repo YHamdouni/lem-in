@@ -1,16 +1,24 @@
 package lemin
 
 import (
+	"fmt"
+	"os"
+	"strconv"
 	"strings"
 )
 
-func RoomsDetails(data [][]string) (map[string][]string, string, string) {
+func RoomsDetails(data [][]string) (map[string][]string, string, string, int) {
 	var rooms [][]string
 	check := false
 	var count1 int
 	var count2 int
 	var start []string
 	var end []string
+	numberOfAnts, err := strconv.Atoi(data[0][0])
+	if err != nil {
+		fmt.Println("Please check the entry for the number of ants.")
+		os.Exit(0)
+	}
 	for _, lines := range data {
 		for _, line := range lines {
 			split := strings.Split(line, "-")
@@ -37,6 +45,5 @@ func RoomsDetails(data [][]string) (map[string][]string, string, string) {
 		}
 	}
 	graph := GenerateGraph(rooms)
-	return graph, start[0], end[0]
+	return graph, start[0], end[0], numberOfAnts
 }
-

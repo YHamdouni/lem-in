@@ -24,7 +24,11 @@ func main() {
 		fmt.Println("error reading file")
 		os.Exit(0)
 	}
-	graph, start, end := Functions.RoomsDetails(data)
+	graph, start, end, numberOfAnts := Functions.RoomsDetails(data)
 	Allpath := Functions.WAYS(graph, start, end)
-	fmt.Println("All paths:", Allpath)
+	fmt.Println("ants: ", numberOfAnts)
+	bestPaths := Functions.SortPaths(Allpath)
+	for _, path := range bestPaths {
+		fmt.Println(path)
+	}
 }
