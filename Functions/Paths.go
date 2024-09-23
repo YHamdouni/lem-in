@@ -1,9 +1,18 @@
 package lemin
 
+import (
+	"fmt"
+	"os"
+)
+
 func WAYS(graph map[string][]string, start string, end string) [][]string {
 	var result [][]string
 	var path []string
 	result = dfs(graph, start, end, path)
+	if len(result) == 0 {
+		fmt.Println("ERROR: invalid data format")
+		os.Exit(0)
+	}
 	return result
 }
 
