@@ -15,8 +15,8 @@ func RoomsDetails(data [][]string) (map[string][]string, string, string, int) {
 	var start []string
 	var end []string
 	numberOfAnts, err := strconv.Atoi(data[0][0])
-	if err != nil {
-		fmt.Println("Please check the entry for the number of ants.")
+	if err != nil || numberOfAnts <= 0 {
+		fmt.Println("ERROR: invalid data format, invalid number of Ants")
 		os.Exit(0)
 	}
 	for _, lines := range data {
@@ -43,6 +43,10 @@ func RoomsDetails(data [][]string) (map[string][]string, string, string, int) {
 				count1++
 			}
 		}
+	}
+	if start[0] == "L" || start[0] == "#" {
+		fmt.Println("ERROR: invalid data format, no start room found")
+		os.Exit(0)
 	}
 	graph := GenerateGraph(rooms)
 	return graph, start[0], end[0], numberOfAnts

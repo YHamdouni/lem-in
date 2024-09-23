@@ -25,10 +25,27 @@ func main() {
 		os.Exit(0)
 	}
 	graph, start, end, numberOfAnts := Functions.RoomsDetails(data)
-	Allpath := Functions.WAYS(graph, start, end)
-	fmt.Println("ants: ", numberOfAnts)
-	bestPaths := Functions.SortPaths(Allpath)
-	for _, path := range bestPaths {
-		fmt.Println(path)
+	Allpaths := Functions.WAYS(graph, start, end)
+	// i need to remove this "numberOfAnts <= 0 " when i will finish the project
+	if numberOfAnts <= 0 || len(Allpaths) == 0 {
+		fmt.Println("ERROR: invalid data format")
+		os.Exit(0)
+	}
+	fmt.Println("graph", graph)
+	ShortestWhitoutSort := Functions.GetShortestPaths(Allpaths)
+	fmt.Println("no sorted", ShortestWhitoutSort)
+	Functions.SortPaths(ShortestWhitoutSort)
+	ShortestPaths := Functions.GetShortestPaths(ShortestWhitoutSort)
+	fmt.Println("yessorted", ShortestPaths)
+	fmt.Println("///////////////////////")
+	if len(ShortestWhitoutSort) > len(ShortestPaths) {
+		fmt.Println("no sort", ShortestWhitoutSort)
+	} else {
+		fmt.Println("sorted", ShortestPaths)
 	}
 }
+
+// bestPaths := Functions.SortPaths(Allpath)
+// for _, path := range bestPaths {
+// 	fmt.Println(path)
+// }

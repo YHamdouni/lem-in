@@ -18,7 +18,11 @@ func dfs(graph map[string][]string, current string, end string, path []string) [
 	}
 	for _, neighbor := range graph[current] {
 		if !Contains(path, neighbor) {
-			Paths = append(Paths, dfs(graph, neighbor, end, path)...)
+			// Call dfs recursively on the neighbor to explore further paths
+			foundPaths := dfs(graph, neighbor, end, path)
+
+			// Add all found paths from this call to the main Paths slice
+			Paths = append(Paths, foundPaths...)
 		}
 	}
 
