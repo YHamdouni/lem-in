@@ -25,5 +25,10 @@ func main() {
 	////////////////////////////////////////////////////
 	ShortestPaths := Functions.GetShortestPaths(Allpaths)
 	sortedPaths := Functions.SortPaths(ShortestPaths)
-	fmt.Println("sorted", sortedPaths)
+	fmt.Println("Paths", sortedPaths)
+	// result :=
+	Functions.FinalResult(sortedPaths, numberOfAnts, start, end)
+	// for i := 0; i < len(result); i++ {
+	// 	fmt.Println(result[i])
+	// }
 }
