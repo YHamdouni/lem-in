@@ -6,6 +6,22 @@ import (
 	"strings"
 )
 
+func Print(paths [][]string, totalAnts int, start string, end string) {
+	positions := make([]int, totalAnts)
+	occupied := make(map[string]int)
+	// rounds := make([][]string, 0)
+	// var result string
+	for {
+		for i := 0; i < totalAnts; i++ {
+			pathIndex := i % len(paths)
+			currentroom := paths[pathIndex][positions[i]]
+			fmt.Println("currentroom", currentroom)
+			positions[i]++
+			occupied[currentroom]++
+		}
+	}
+}
+
 func FinalResult(paths [][]string, totalAnts int, start string, end string) {
 	// Track the positions of each ant
 	positions := make([]int, totalAnts)
@@ -21,6 +37,7 @@ func FinalResult(paths [][]string, totalAnts int, start string, end string) {
 		for ant := 0; ant < totalAnts; ant++ {
 			pathIndex := ant % len(paths)
 			if positions[ant] < len(paths[pathIndex]) {
+				fmt.Println(positions[ant], len(paths[pathIndex]))
 				currentRoom := paths[pathIndex][positions[ant]]
 
 				// Check if the room is occupied (except start and end rooms)
