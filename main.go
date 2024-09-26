@@ -17,7 +17,7 @@ func main() {
 	}
 	graph, start, end, numberOfAnts := Functions.RoomsDetails(data)
 	Allpaths := Functions.WAYS(graph, start, end)
-	fmt.Println("len", len(Allpaths))
+	// fmt.Println("len", len(Allpaths))
 	// i need to remove this "numberOfAnts <= 0" when i will finish the project
 	if numberOfAnts <= 0 {
 		fmt.Println("ERROR: invalid data format")
@@ -26,6 +26,6 @@ func main() {
 	////////////////////////////////////////////////////
 	ShortestPaths := Functions.GetShortestPaths(Allpaths)
 	sortedPaths := Functions.SortPaths(ShortestPaths)
-	fmt.Println("Paths", sortedPaths)
-	Functions.Print(sortedPaths, numberOfAnts, start, end)
+	// fmt.Println("Paths", sortedPaths)
+	Functions.FinalResult(sortedPaths, numberOfAnts, start, end)
 }

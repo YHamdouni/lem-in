@@ -37,7 +37,7 @@ func FinalResult(paths [][]string, totalAnts int, start string, end string) {
 		for ant := 0; ant < totalAnts; ant++ {
 			pathIndex := ant % len(paths)
 			if positions[ant] < len(paths[pathIndex]) {
-				fmt.Println(positions[ant], len(paths[pathIndex]))
+				// fmt.Println(positions[ant], len(paths[pathIndex]))
 				currentRoom := paths[pathIndex][positions[ant]]
 
 				// Check if the room is occupied (except start and end rooms)
