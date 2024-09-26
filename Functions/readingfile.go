@@ -22,6 +22,7 @@ func Readfile(filename string) ([][]string, error) {
 			result = append(result, slice)
 		}
 	}
+	// result = append(result, []string{"\n"})
 	if len(result) == 0 {
 		fmt.Println("ERROR:\tthe file is empty")
 		os.Exit(0)

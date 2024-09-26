@@ -1,28 +1,11 @@
 package lemin
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 )
 
-func Print(paths [][]string, totalAnts int, start string, end string) {
-	positions := make([]int, totalAnts)
-	occupied := make(map[string]int)
-	// rounds := make([][]string, 0)
-	// var result string
-	for {
-		for i := 0; i < totalAnts; i++ {
-			pathIndex := i % len(paths)
-			currentroom := paths[pathIndex][positions[i]]
-			fmt.Println("currentroom", currentroom)
-			positions[i]++
-			occupied[currentroom]++
-		}
-	}
-}
-
-func FinalResult(paths [][]string, totalAnts int, start string, end string) {
+func FinalResult(paths [][]string, totalAnts int, start string, end string) [][]string {
 	// Track the positions of each ant
 	positions := make([]int, totalAnts)
 	occupied := make(map[string]int) // Tracks which rooms are occupied
@@ -32,7 +15,6 @@ func FinalResult(paths [][]string, totalAnts int, start string, end string) {
 	for {
 		output := make([]string, 0)
 		allDone := true // Flag to check if all ants have reached their destination
-
 		// Loop through each ant
 		for ant := 0; ant < totalAnts; ant++ {
 			pathIndex := ant % len(paths)
@@ -76,9 +58,5 @@ func FinalResult(paths [][]string, totalAnts int, start string, end string) {
 			occupied[roomID]--
 		}
 	}
-
-	// Print the output in the desired format
-	for _, round := range rounds {
-		fmt.Println(strings.Join(round, " "))
-	}
+	return rounds
 }
