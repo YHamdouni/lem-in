@@ -16,8 +16,10 @@ func main() {
 		os.Exit(0)
 	}
 	graph, start, end, numberOfAnts := Functions.RoomsDetails(data)
+	fmt.Println("ggraph", graph)
 	Allpaths := Functions.WAYS(graph, start, end)
-	ShortestPaths := Functions.GetShortestPaths(Allpaths)
+	ShortestPaths := Functions.GetBestPaths(Allpaths, numberOfAnts)
+	fmt.Println("sho", ShortestPaths)
 	sortedPaths := Functions.SortPaths(ShortestPaths)
 	DISTRIBUTION := Functions.FinalResult(sortedPaths, numberOfAnts, start, end)
 	Functions.Printfinal(DISTRIBUTION, data)

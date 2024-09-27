@@ -1,62 +1,192 @@
 package lemin
 
-import (
-	"strconv"
-	"strings"
-)
+import "fmt"
 
 func FinalResult(paths [][]string, totalAnts int, start string, end string) [][]string {
-	// Track the positions of each ant
-	positions := make([]int, totalAnts)
-	occupied := make(map[string]int) // Tracks which rooms are occupied
-	rounds := make([][]string, 0)    // To store output for each round
+	type Ant struct {
+		ID        int
+		PathIndex int
+		Position  int
+	}
 
-	// Continue until all ants reach the end
-	for {
-		output := make([]string, 0)
-		allDone := true // Flag to check if all ants have reached their destination
-		// Loop through each ant
-		for ant := 0; ant < totalAnts; ant++ {
-			pathIndex := ant % len(paths)
-			if positions[ant] < len(paths[pathIndex]) {
-				// fmt.Println(positions[ant], len(paths[pathIndex]))
-				currentRoom := paths[pathIndex][positions[ant]]
+	// Initialize ants
+	ants := make([]Ant, totalAnts)
+	for i := range ants {
+		ants[i] = Ant{ID: i + 1, PathIndex: -1, Position: -1} // -1 means not on a path yet
+	}
 
-				// Check if the room is occupied (except start and end rooms)
-				if currentRoom != start && currentRoom != end && occupied[currentRoom] > 0 {
-					continue // Skip this ant's movement if the room is occupied
+	var rounds [][]string
+	antsAtEnd := 0
+	currentAnt := 0
+
+	for antsAtEnd < totalAnts {
+		var moves []string
+		occupied := make(map[string]bool)
+
+		// Move ants already on paths
+		for i := range ants {
+			if ants[i].PathIndex != -1 {
+				if ants[i].Position+1 < len(paths[ants[i].PathIndex]) {
+					ants[i].Position++
+					currentRoom := paths[ants[i].PathIndex][ants[i].Position]
+					if currentRoom != end {
+						if !occupied[currentRoom] {
+							moves = append(moves, fmt.Sprintf("L%d-%s", ants[i].ID, currentRoom))
+							occupied[currentRoom] = true
+						}
+					} else {
+						antsAtEnd++
+					}
+				} else {
+					// Ant has reached the end
+					antsAtEnd++
 				}
-
-				allDone = false // At least one ant is still moving
-
-				// If not in the starting position, format the output
-				if positions[ant] > 0 {
-					output = append(output, "L"+strconv.Itoa(ant+1)+"-"+currentRoom)
-				}
-
-				// Mark the current room as occupied
-				occupied[currentRoom]++
-
-				// Move the ant to the next position
-				positions[ant]++
 			}
 		}
 
-		// If all ants are done, break the loop
-		if allDone {
-			break
+		// Put new ants on paths
+		for pathIndex, path := range paths {
+			if currentAnt < totalAnts && ants[currentAnt].PathIndex == -1 && len(path) > 1 {
+				nextRoom := path[1] // First room after start
+				if !occupied[nextRoom] {
+					ants[currentAnt].PathIndex = pathIndex
+					ants[currentAnt].Position = 1
+					moves = append(moves, fmt.Sprintf("L%d-%s", ants[currentAnt].ID, nextRoom))
+					occupied[nextRoom] = true
+					currentAnt++
+				}
+			}
 		}
 
-		// Store the current round's output
-		if len(output) > 0 {
-			rounds = append(rounds, output)
-		}
-
-		// Reset the occupancy for the next round
-		for _, room := range output {
-			roomID := strings.Split(room, "-")[1]
-			occupied[roomID]--
+		if len(moves) > 0 {
+			rounds = append(rounds, moves)
 		}
 	}
+
 	return rounds
 }
+
+// //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// /////// chat gpt + claude best result for now
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// func FinalResult(paths [][]string, totalAnts int, start string, end string) [][]string {
+// 	type Ant struct {
+// 		ID        int
+// 		PathIndex int
+// 		Position  int
+// 	}
+
+// 	// Initialize ants
+// 	ants := make([]Ant, totalAnts)
+// 	for i := range ants {
+// 		ants[i] = Ant{ID: i + 1, PathIndex: i % len(paths), Position: -1} // -1 means at start
+// 	}
+
+// 	var rounds [][]string
+// 	occupied := make(map[string]bool)
+
+// 	for {
+// 		var moves []string
+// 		antsAtEnd := 0
+// 		movedThisRound := false
+
+// 		// Process each ant
+// 		for i := range ants {
+// 			ant := &ants[i]
+// 			// fmt.Println("ant", ant)
+// 			if ant.Position == len(paths[ant.PathIndex])-1 {
+// 				antsAtEnd++
+// 				continue
+// 			}
+
+// 			nextPos := ant.Position + 1
+// 			nextRoom := paths[ant.PathIndex][nextPos]
+
+// 			if nextRoom == end || (!occupied[nextRoom]) {
+// 				if ant.Position >= 0 {
+// 					occupied[paths[ant.PathIndex][ant.Position]] = false
+// 				}
+// 				ant.Position = nextPos
+// 				if nextRoom != end {
+// 					occupied[nextRoom] = true
+// 				}
+// 				if nextRoom != start {
+// 					moves = append(moves, fmt.Sprintf("L%d-%s", ant.ID, nextRoom))
+// 					// fmt.Println("move", moves)
+// 				}
+// 				movedThisRound = true
+// 			}
+// 		}
+// 		if movedThisRound {
+// 			rounds = append(rounds, moves)
+// 		} else {
+// 			// If no moves were made, we need to break to avoid infinite loop
+// 			break
+// 		}
+
+// 		if antsAtEnd == totalAnts {
+// 			break
+// 		}
+// 	}
+
+// 	return rounds[1:]
+// }
+
+/////////////////////////////////////////////////////////////////////////
+//claude ai
+////////////////////////////////////////////////////////////////////////
+
+// func FinalResult(paths [][]string, totalAnts int, start string, end string) [][]string {
+// 	type Ant struct {
+// 		ID        int
+// 		PathIndex int
+// 		Position  int
+// 	}
+
+// 	// Initialize ants
+// 	ants := make([]Ant, totalAnts)
+// 	for i := range ants {
+// 		ants[i] = Ant{ID: i + 1, PathIndex: (i) % len(paths), Position: -1} // -1 means at start
+// 	}
+
+// 	var rounds [][]string
+// 	occupied := make(map[string]bool)
+
+// 	for {
+// 		var moves []string
+// 		antsAtEnd := 0
+// 		// Process each ant
+// 		for i := range ants {
+// 			ant := &ants[i]
+// 			if ant.Position == len(paths[ant.PathIndex])-1 {
+// 				antsAtEnd++
+// 				continue
+// 			}
+
+// 			nextPos := ant.Position + 1
+// 			nextRoom := paths[ant.PathIndex][nextPos]
+
+// 			if !occupied[nextRoom] || nextRoom == end {
+// 				if ant.Position >= 0 {
+// 					occupied[paths[ant.PathIndex][ant.Position]] = false
+// 				}
+// 				ant.Position = nextPos
+// 				if nextRoom != end {
+// 					occupied[nextRoom] = true
+// 				}
+// 				moves = append(moves, fmt.Sprintf("L%d-%s", ant.ID, nextRoom))
+// 			}
+// 		}
+
+// 		if len(moves) > 0 {
+// 			rounds = append(rounds, moves)
+// 			fmt.Println("round", rounds)
+// 		}
+
+// 		if antsAtEnd == totalAnts {
+// 			break
+// 		}
+// 	}
+
+// 	return rounds
+// }

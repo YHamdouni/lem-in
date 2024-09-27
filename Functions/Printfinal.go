@@ -5,16 +5,16 @@ import (
 	"strings"
 )
 
-func Printfinal(DISTRIBUTION [][]string, data [][]string) {
-	var final_result [][]string
-	final_result = append(final_result, data...)
-	final_result = append(final_result, DISTRIBUTION...)
-	var count int
-	for _, round := range final_result {
-		count++
-		if count == len(data) {
-			fmt.Print("\n")
-		}
+func Printfinal(distribution [][]string, data [][]string) {
+	// Print the input data
+	// for _, line := range data {
+	// 	fmt.Println(strings.Join(line, " "))
+	// }
+
+	// fmt.Print("\n") // Empty line between input and output
+
+	// Print the ant movements
+	for _, round := range distribution {
 		fmt.Println(strings.Join(round, " "))
 	}
 }

@@ -10,6 +10,8 @@ import (
 func RoomsDetails(data [][]string) (map[string][]string, string, string, int) {
 	var rooms [][]string
 	check := false
+	checkend := true
+	checkstart := true
 	var count1 int
 	var count2 int
 	var start []string
@@ -38,16 +40,26 @@ func RoomsDetails(data [][]string) (map[string][]string, string, string, int) {
 			}
 			check = false
 			if line == "##end" {
+				checkend = false
 				count2++
 			} else if line == "##start" {
 				count1++
+				checkstart = false
 			}
 		}
 	}
-	if start[0] == "L" || start[0] == "#" {
+
+	if checkend {
+		fmt.Println("ERROR: invalid data format, no end room found")
+		os.Exit(0)
+	} else if checkstart {
+		fmt.Println("ERROR: invalid data format, no start room found")
+		os.Exit(0)
+	} else if start[0] == "L" || start[0] == "#" {
 		fmt.Println("ERROR: invalid data format, no start room found")
 		os.Exit(0)
 	}
+
 	graph := GenerateGraph(rooms)
 	return graph, start[0], end[0], numberOfAnts
 }
