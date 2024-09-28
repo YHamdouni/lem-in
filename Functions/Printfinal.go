@@ -7,11 +7,11 @@ import (
 
 func Printfinal(distribution [][]string, data [][]string) {
 	// Print the input data
-	// for _, line := range data {
-	// 	fmt.Println(strings.Join(line, " "))
-	// }
+	for _, line := range data {
+		fmt.Println(strings.Join(line, " "))
+	}
 
-	// fmt.Print("\n") // Empty line between input and output
+	fmt.Print("\n") // Empty line between input and output
 
 	// Print the ant movements
 	for _, round := range distribution {

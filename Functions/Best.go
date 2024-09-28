@@ -12,7 +12,7 @@ func GetBestPaths(allPaths [][]string, numberOfAnts int) [][]string {
 	for i, path := range allPaths {
 		pathInfos[i] = PathInfo{path: path, length: len(path) - 1} // -1 because we count edges, not nodes
 	}
-	sortPathsByLength(pathInfos)
+	// sortPathsByLength(pathInfos)
 	// Start with the shortest path as the best candidate
 	bestPaths := []PathInfo{pathInfos[0]}
 	// Helper function to calculate the number of rounds needed for a given set of paths
@@ -48,7 +48,6 @@ func GetBestPaths(allPaths [][]string, numberOfAnts int) [][]string {
 	for i, p := range bestPaths {
 		result[i] = p.path
 	}
-
 	return result
 }
 
