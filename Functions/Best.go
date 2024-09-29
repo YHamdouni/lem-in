@@ -1,49 +1,53 @@
 package lemin
 
+import (
+	"math"
+	"sort"
+)
+
 type PathInfo struct {
 	path   []string
 	length int
 }
 
-// GetBestPaths finds the optimal paths for a given number of ants.
 func GetBestPaths(allPaths [][]string, numberOfAnts int) [][]string {
-	// Convert the provided paths into PathInfo structs, calculating their lengths
+	if len(allPaths) == 0 || numberOfAnts <= 0 {
+		return nil
+	}
+
 	pathInfos := make([]PathInfo, len(allPaths))
 	for i, path := range allPaths {
-		pathInfos[i] = PathInfo{path: path, length: len(path) - 1} // -1 because we count edges, not nodes
+		pathInfos[i] = PathInfo{path: path, length: len(path) - 1}
 	}
-	// sortPathsByLength(pathInfos)
-	// Start with the shortest path as the best candidate
-	bestPaths := []PathInfo{pathInfos[0]}
-	// Helper function to calculate the number of rounds needed for a given set of paths
-	// hadi katjib l path and katjib ch7al fih man move bach yowssal l end
-	bestRounds := calculateRounds(bestPaths, numberOfAnts)
 
-	// Iterate through the remaining paths to find the best combination
-	for i := 1; i < len(pathInfos); i++ {
-		candidatePaths := make([]PathInfo, len(bestPaths))
-		copy(candidatePaths, bestPaths)
-		canAdd := true
-		// Check if the current path shares any room with the best paths
-		for _, p := range candidatePaths {
-			if sharesRoom(p.path, pathInfos[i].path) {
-				canAdd = false // Cannot add this path due to overlap
-				break
+	sort.Slice(pathInfos, func(i, j int) bool {
+		return pathInfos[i].length < pathInfos[j].length
+	})
+
+	bestPaths := []PathInfo{}
+	bestRounds := math.MaxInt32
+
+	for i := 0; i < len(pathInfos); i++ {
+		candidatePaths := []PathInfo{pathInfos[i]}
+		for j := i + 1; j < len(pathInfos); j++ {
+			if !hasOverlap(candidatePaths, pathInfos[j]) {
+				candidatePaths = append(candidatePaths, pathInfos[j])
 			}
 		}
-		// If it doesn't overlap, calculate the candidate rounds
-		if canAdd {
-			candidatePaths = append(candidatePaths, pathInfos[i])
-			candidateRounds := calculateRounds(candidatePaths, numberOfAnts)
 
-			// Update bestPaths if the new candidate has fewer rounds
-			if candidateRounds < bestRounds {
-				bestPaths = candidatePaths
-				bestRounds = candidateRounds
-			}
+		rounds := calculateRoundsEfficient(candidatePaths, numberOfAnts)
+		if rounds < bestRounds {
+			bestRounds = rounds
+			bestPaths = make([]PathInfo, len(candidatePaths))
+			copy(bestPaths, candidatePaths)
+		}
+
+		// Early stopping condition
+		if bestRounds <= pathInfos[i].length {
+			break
 		}
 	}
-	// Prepare the result by extracting the paths from bestPaths
+
 	result := make([][]string, len(bestPaths))
 	for i, p := range bestPaths {
 		result[i] = p.path
@@ -51,30 +55,50 @@ func GetBestPaths(allPaths [][]string, numberOfAnts int) [][]string {
 	return result
 }
 
-// Helper function to check if two paths share any intermediate room (excluding start and end)
-func sharesRoom(path1, path2 []string) bool {
+func hasOverlap(paths []PathInfo, newPath PathInfo) bool {
 	set := make(map[string]bool)
-	for i := 1; i < len(path1)-1; i++ {
-		set[path1[i]] = true
-	}
-	// Check if any intermediate room of path2 is in the set
-	for i := 1; i < len(path2)-1; i++ {
-		if set[path2[i]] {
-			return true // A shared room is found
+	for _, path := range paths {
+		for i := 1; i < len(path.path)-1; i++ {
+			set[path.path[i]] = true
 		}
 	}
-	return false // No shared rooms
+	for i := 1; i < len(newPath.path)-1; i++ {
+		if set[newPath.path[i]] {
+			return true
+		}
+	}
+	return false
 }
 
-func calculateRounds(pathlenghts []PathInfo, ants int) int {
-	if len(pathlenghts) == 0 {
-		return 0 // No paths means no rounds
+func calculateRoundsEfficient(paths []PathInfo, ants int) int {
+	if len(paths) == 0 {
+		return 0
 	}
-	totalLength := 0
-	// Sum up the lengths of all paths
-	for _, p := range pathlenghts {
-		totalLength += p.length
+
+	// Create a copy of paths to avoid modifying the original
+	pathsCopy := make([]PathInfo, len(paths))
+	for i, p := range paths {
+		pathsCopy[i] = PathInfo{path: p.path, length: p.length}
 	}
-	// Calculate rounds based on total length and number of paths
-	return (totalLength + ants - 1) / len(pathlenghts)
+
+	// Distribute ants optimally among paths
+	for ants > 0 {
+		shortestIndex := 0
+		for i := 1; i < len(pathsCopy); i++ {
+			if pathsCopy[i].length < pathsCopy[shortestIndex].length {
+				shortestIndex = i
+			}
+		}
+		pathsCopy[shortestIndex].length++
+		ants--
+	}
+
+	maxLength := 0
+	for _, path := range pathsCopy {
+		if path.length > maxLength {
+			maxLength = path.length
+		}
+	}
+
+	return maxLength - 1
 }

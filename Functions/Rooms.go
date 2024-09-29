@@ -21,6 +21,7 @@ func RoomsDetails(data [][]string) (map[string][]string, string, string, int) {
 		fmt.Println("ERROR: invalid data format, invalid number of Ants")
 		os.Exit(0)
 	}
+
 	for _, lines := range data {
 		for _, line := range lines {
 			split := strings.Split(line, "-")
